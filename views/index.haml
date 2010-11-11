@@ -1,0 +1,18 @@
+.column.span-12.append-6.prepend-6.last
+  %h1 Full size website screenshots
+  %form.inline#screenshot-form{ :method => "post", :action => "/" }
+
+    .column.span-4
+      %label{ :for => "url" } Website URL: *
+    .column.span-8.last
+      %input#url.text{ :type => "text", :name => "url", :value => params[:url]  }
+      
+    .column.span-8.prepend-4.last
+      %button Create screenshot
+
+- if request.post?
+  .column.span-24.last.centered
+    %hr
+    %img{ :src => "/1.0/#{@url}" }
+    %hr
+    
