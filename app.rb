@@ -1,6 +1,7 @@
 require "rubygems"
 require "haml"
 require "sinatra"
+require "md5"
 require "pp"
 
 use Rack::Static, :urls => ["/css", "/js", "/img"], :root => "public"
@@ -28,7 +29,8 @@ post "/" do
 end
 
 get "/1.0/*" do
-  out = File.join(settings.cache_folder, "test.png")
+  hash = MD5.new(url)
+  out = File.join(settings.cache_folder, "#{hash}.png")
   system("#{settings.cuty_capt} --url='#{url}' --out='#{out}' --plugins=on --delay=1000")
   send_file(out, :disposition => "inline", 
   #               :filename => File.basename(out),
