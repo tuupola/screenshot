@@ -10,7 +10,7 @@ configure :development do
 end
 
 configure :production do
-  set :cuty_capt, "/home/tuupola/cutycapt/CutyCapt/xvfb-run.sh --server-args='-screen 0, 1024x768x24' /home/tuupola/cutycapt/CutyCapt/CutyCapt"
+  set :cuty_capt, "/usr/local/CutyCapt/xvfb-run.sh --server-args='-screen 0, 1024x768x24' /usr/local/CutyCapt/CutyCapt"
 end
 
 set :cache_folder, Proc.new { File.join(root, "public", "img") }
