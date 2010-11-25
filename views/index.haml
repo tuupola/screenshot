@@ -1,7 +1,7 @@
 .column.span-12.append-6.prepend-6.last
   %h1 Full size website screenshots
   %form.inline#screenshot-form{ :method => "post", :action => "/" }
-
+    %input{:type => "hidden", :name => "xxformat", :value => "pdf"}
     .column.span-4
       %label{ :for => "url" } Website URL: *
     .column.span-8.last
