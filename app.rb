@@ -39,7 +39,7 @@ get %r{/1.0/(.*)\.(jpg|png|pdf)?$} do
   pp params
   if ("pdf" == extension) 
     system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.png' --plugins=on --delay=1000")
-    png = "#{out}.png"
+    png = "#{out}.jpg"
     Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
       image open(png), :position => :center, 
                        :vposition => :center, 
