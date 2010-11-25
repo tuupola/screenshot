@@ -3,6 +3,7 @@ require "haml"
 require "sinatra"
 require "md5"
 require "prawn"
+require "prawn/fast_png"
 require "pp"
 
 use Rack::Static, :urls => ["/css", "/js", "/img"], :root => "public"
@@ -38,8 +39,8 @@ end
 get %r{/1.0/(.*)\.(jpg|png|pdf)?$} do
   pp params
   if ("pdf" == extension) 
-    system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.jpg' --plugins=on --delay=1000")
-    png = "#{out}.jpg"
+    system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.png' --plugins=on --delay=1000")
+    png = "#{out}.png"
     Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
       image open(png), :position => :center, 
                        :vposition => :center, 
