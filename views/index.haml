@@ -1,18 +1,37 @@
 .column.span-12.append-6.prepend-6.last
   %h1 Full size website screenshots
   %form.inline#screenshot-form{ :method => "post", :action => "/" }
-    %input{:type => "hidden", :name => "xxformat", :value => "pdf"}
     .column.span-4
       %label{ :for => "url" } Website URL: *
     .column.span-8.last
       %input#url.text{ :type => "text", :name => "url", :value => params[:url]  }
       
+
+    .column.span-8.prepend-4.last
+      %a#advanced-toggle{ :href => "/toggle" } #{advanced_toggle_text}
+
+    #advanced.column.span-12.last{:class => advanced_visibility}      
+      .column.span-4
+        %label{ :for => "url" } File format: *
+      .column.span-8.last
+        %select{:name => "format", :id => "format"}
+          %option{:value => "png", :selected => ("png" == params["format"])} png
+          %option{:value => "jpg", :selected => ("jpg" == params["format"])} jpg
+          %option{:value => "pdf", :selected => ("pdf" == params["format"])} pdf
+
+      .column.span-4
+        %label{ :for => "url" } Display: *
+      .column.span-8.last
+        %select{:name => "display", :id => "display"}
+          %option{:value => "inline", :selected => ("inline" == params["display"])} Inline
+          %option{:value => "download", :selected => ("download" == params["display"])} Download
+  
     .column.span-8.prepend-4.last
       %button Create screenshot
 
-- if request.post?
-  .column.span-24.last.centered
-    %hr
+#screenshot.column.span-24.last.centered
+  %hr
+  - if request.post?
     %img{ :src => "/1.0/#{@url}" }
-    %hr
+  %hr
     

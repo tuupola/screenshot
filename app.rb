@@ -26,8 +26,25 @@ get "/" do
 end
 
 post "/" do
-  @url = Rack::Utils.escape(params["url"].gsub("http://", ""))
-  haml :index
+  pp params
+  @url = Rack::Utils.escape(params["url"].gsub("http://", "")) + "." + params["format"]
+  # Ajax submitting not used at the moment.
+  if request.xhr?
+    haml :ajax, :layout => false
+  else
+    # Display inline
+    if "inline" == params["display"]
+      haml :index
+    # or download
+    else
+      redirect "/1.0/download/#{params['url']}.#{params['format']}"
+    end
+  end
+end
+
+get %r{/1.0/download/(.*)\.(jpg|png|pdf)?$} do  
+  generate_screenshot
+  download_screenshot
 end
 
 #
@@ -35,32 +52,43 @@ end
 # style requests. However Apache will return 404 for latter unless you have
 # AllowEncodedSlashes On
 #
-#get "/1.0/*" do
 get %r{/1.0/(.*)\.(jpg|png|pdf)?$} do
-  pp params
-  if ("pdf" == extension) 
-    system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.png' --plugins=on --delay=1000")
-    png = "#{out}.png"
-    Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
-      image open(png), :position => :center, 
-                       :vposition => :center, 
-                       #:fit => Prawn::Document::PageGeometry::SIZES["A4"]
-                       :fit => [540,763]
-    end
-    send_file("#{out}.#{extension}", :disposition => "inline")
-  else
-    system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
-    send_file("#{out}.#{extension}", :disposition => "inline")
-  end    
-  #               :filename => File.basename(out),
-  #               :type => "image/#{extension}")
+  generate_screenshot
+  display_screenshot
 end
 
 get "/1.0/*" do
   redirect "#{params["splat"][0]}.png"
 end
 
+get "/toggle" do
+  toggle_mode
+  redirect "/"
+end
+
 helpers do
+  def generate_screenshot
+    if ("pdf" == extension) 
+      system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.png' --plugins=on --delay=1000")
+      png = "#{out}.png"
+      Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
+        image open(png), :position => :center, 
+                         :vposition => :center, 
+                         #:fit => Prawn::Document::PageGeometry::SIZES["A4"]
+                         :fit => [540,763]
+      end
+    else
+      system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
+    end
+  end
+  
+  def display_screenshot
+    send_file("#{out}.#{extension}", :disposition => "inline")
+  end
+  
+  def download_screenshot
+    send_file("#{out}.#{extension}", :filename => File.basename(out) + ".#{extension}")
+  end
   
   def url
     #url = Rack::Utils.unescape(params["splat"][0])
@@ -79,5 +107,25 @@ helpers do
   def extension
     params["captures"][1] || "png"
   end
-    
+  
+  def mode
+    request.cookies["screenshot_mode"] || "simple"
+  end
+  
+  def advanced_visibility
+    "advanced" == mode ? "visible" : "hidden"
+  end
+
+  def advanced_toggle_text
+    "advanced" == mode ? "<< Hide advanced" : "Show advanced >>"
+  end
+
+  def toggle_mode
+    if "simple" == mode
+      response.set_cookie("screenshot_mode", "advanced")
+    else
+      response.set_cookie("screenshot_mode", "simple")
+    end
+  end
+  
 end
