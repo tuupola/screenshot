@@ -298,3 +298,15 @@ width:295px;
 	padding:25px;
 	color:#fff;	
 }
+
+h1 { 
+  font-family: 'Droid Sans', arial, serif; 
+  text-shadow: 1px 1px 0 #fff, 2px 2px 0 #bbb;
+  text-transform: uppercase;
+}
+
+body {
+  /*font-family: 'Droid Sans', arial, serif; */
+}
+
+

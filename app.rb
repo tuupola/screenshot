@@ -69,7 +69,7 @@ end
 helpers do
   def generate_screenshot
     if ("pdf" == extension) 
-      system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.png' --plugins=on --delay=1000")
+      system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.png' --plugins=on --delay=1000")
       png = "#{out}.png"
       Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
         image open(png), :position => :center, 
@@ -78,7 +78,7 @@ helpers do
                          :fit => [540,763]
       end
     else
-      system("#{settings.cuty_capt} --url='#{url}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
+      system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
     end
   end
   
@@ -90,7 +90,7 @@ helpers do
     send_file("#{out}.#{extension}", :filename => File.basename(out) + ".#{extension}")
   end
   
-  def url
+  def url_with_http
     #url = Rack::Utils.unescape(params["splat"][0])
     url = Rack::Utils.unescape(params["captures"][0])
     unless "http" == url[0, 4]
@@ -100,7 +100,7 @@ helpers do
   end
   
   def out
-    hash = MD5.new(url)
+    hash = MD5.new(url_with_http)
     out = File.join(settings.cache_folder, "#{hash}")
   end
   
