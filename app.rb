@@ -70,15 +70,17 @@ end
 
 helpers do
   def generate_screenshot
-    if ("xxpdf" == extension) 
-      system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.png' --plugins=on --delay=1000")
-      png = "#{out}.png"
-      Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
-        image open(png), :position => :center, 
-                         :vposition => :center, 
-                         #:fit => Prawn::Document::PageGeometry::SIZES["A4"]
-                         :fit => [540,763]
-      end
+    if ("pdf" == extension) 
+      #system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.png' --plugins=on --delay=1000")
+      #png = "#{out}.png"
+      #Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
+      #  image open(png), :position => :center, 
+      #                   :vposition => :center, 
+      #                   #:fit => Prawn::Document::PageGeometry::SIZES["A4"]
+      #                   :fit => [540,763]
+      #end
+      system("#{settings.phantomjs} rasterize.js #{url_with_http} #{out}.#{extension} A4")
+      
     else
       #system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
       system("#{settings.phantomjs} rasterize.js #{url_with_http} #{out}.#{extension}")
