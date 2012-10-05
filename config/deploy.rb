@@ -1,5 +1,6 @@
-set :application, "screenshot2"
-set :repository, "git@github.com:tuupola/#{application}.git"
+set :application, "screenshot"
+#set :repository, "git@github.com:tuupola/#{application}.git"
+set :repository, "git@github.com:tuupola/screenshot.git"
 set :user, "sinatra"
 set :server, "#{application}.taevas.com"
 set :domain, "#{user}@#{server}"
