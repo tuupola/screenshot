@@ -2,14 +2,15 @@ require "rubygems"
 require "haml"
 require "sinatra"
 require "md5"
-require "prawn"
-require "prawn/fast_png"
+#require "prawn"
+#require "prawn/fast_png"
 require "pp"
 
 use Rack::Static, :urls => ["/css", "/js", "/img"], :root => "public"
 
 configure :development do
-  set :cuty_capt, "/Users/tuupola/bin/CutyCapt";
+  #set :cuty_capt, "/Users/tuupola/bin/CutyCapt";
+  set :phantomjs, "/usr/local/bin/phantomjs"
 end
 
 configure :production do
@@ -68,7 +69,7 @@ end
 
 helpers do
   def generate_screenshot
-    if ("pdf" == extension) 
+    if ("xxpdf" == extension) 
       system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.png' --plugins=on --delay=1000")
       png = "#{out}.png"
       Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
@@ -78,7 +79,8 @@ helpers do
                          :fit => [540,763]
       end
     else
-      system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
+      #system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
+      system("#{settings.phantomjs} rasterize.js #{url_with_http} #{out}.#{extension}")
     end
   end
   

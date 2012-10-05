@@ -1,4 +1,4 @@
-set :application, "screenshot"
+set :application, "screenshot2"
 set :repository, "git@github.com:tuupola/#{application}.git"
 set :user, "sinatra"
 set :server, "#{application}.taevas.com"
