@@ -44,7 +44,7 @@ post "/" do
   end
 end
 
-get %r{/1.0/download/(.*)\.(jpg|png|pdf)?$} do  
+get %r{/1.0/download/(.*)\.(jpg|png|pdf)?$} do
   generate_screenshot
   download_screenshot
 end
@@ -92,7 +92,8 @@ helpers do
   end
   
   def download_screenshot
-    send_file("#{out}.#{extension}", :filename => File.basename(out) + ".#{extension}")
+    filename = params["filename"] ? params["filename"] : File.basename(out)
+    send_file("#{out}.#{extension}", :filename => filename + ".#{extension}")
   end
   
   def url_with_http
