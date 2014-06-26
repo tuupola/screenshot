@@ -3,6 +3,7 @@ require "bundler/vlad"
 set :application, "screenshot2"
 #set :repository, "git@github.com:tuupola/#{application}.git"
 set :repository, "git@github.com:tuupola/screenshot.git"
+set :revision, "origin/master"
 set :user, "sinatra"
 set :server, "#{application}.taevas.com"
 set :domain, "#{user}@#{server}"
@@ -14,7 +15,7 @@ require "vlad"
 
 namespace :vlad do
   desc "Deploy the code and restart the server"
-  task :deploy => [:update, :"bundle:install", :start_app]  
+  task :deploy => [:update, :"bundle:install", :start_app]
 end
 
 namespace :dev do
