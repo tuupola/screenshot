@@ -70,32 +70,32 @@ end
 
 helpers do
   def generate_screenshot
-    if ("pdf" == extension) 
+    if ("pdf" == extension)
       #system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.png' --plugins=on --delay=1000")
       #png = "#{out}.png"
       #Prawn::Document.generate("#{out}.pdf", :page_size => 'A4') do
-      #  image open(png), :position => :center, 
-      #                   :vposition => :center, 
+      #  image open(png), :position => :center,
+      #                   :vposition => :center,
       #                   #:fit => Prawn::Document::PageGeometry::SIZES["A4"]
       #                   :fit => [540,763]
       #end
       system("#{settings.phantomjs} rasterize.js #{url_with_http} #{out}.#{extension} A4")
-      
+
     else
-      #system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
-      system("#{settings.phantomjs} rasterize.js #{url_with_http} #{out}.#{extension}")
+        system("#{settings.phantomjs} rasterize.js #{url_with_http} #{out}.#{extension} #{params["viewport"]}")
+        #system("#{settings.cuty_capt} --url='#{url_with_http}' --out='#{out}.#{extension}' --plugins=on --delay=1000")
     end
   end
-  
+
   def display_screenshot
     send_file("#{out}.#{extension}", :disposition => "inline")
   end
-  
+
   def download_screenshot
     filename = params["filename"] ? params["filename"] : File.basename(out)
     send_file("#{out}.#{extension}", :filename => filename + ".#{extension}")
   end
-  
+
   def url_with_http
     #url = Rack::Utils.unescape(params["splat"][0])
     url = Rack::Utils.unescape(params["captures"][0])
@@ -104,20 +104,20 @@ helpers do
     end
     url
   end
-  
+
   def out
     hash = MD5.new(url_with_http)
     out = File.join(settings.cache_folder, "#{hash}")
   end
-  
+
   def extension
     params["captures"][1] || "png"
   end
-  
+
   def mode
     request.cookies["screenshot_mode"] || "simple"
   end
-  
+
   def advanced_visibility
     "advanced" == mode ? "visible" : "hidden"
   end
@@ -133,5 +133,5 @@ helpers do
       response.set_cookie("screenshot_mode", "simple")
     end
   end
-  
+
 end
